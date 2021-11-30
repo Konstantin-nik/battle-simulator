@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 )
 
 var wg = sync.WaitGroup{}
@@ -87,7 +86,7 @@ func (bp *BattlePair) Battle(bc chan *Battle) {
 	// fmt.Println("11")
 	bp.StartBattle()
 	b := bp.GetResult()
-	time.Sleep(100 * time.Millisecond)
+	//time.Sleep(100 * time.Millisecond)
 	// fmt.Println("22")
 	bc <- &b
 	defer wg.Done()
@@ -160,15 +159,15 @@ func (w *Warrior) String() string {
 
 // func makePlayer(name string, damage float64) *Battle {
 // 	var p Battle = &Warrior{P: Person{Name: name, Health: 200}, Damage: damage,
-// 		Armor: 5, Range: 3, Flee: 0.69}
+// 		FlatArmor: 5, Range: 3, PercentageArmor: 0.69}
 // 	return &p
 // }
 
 // var (
 // 	player1 Battle = &Warrior{P: Person{Name: "Hero 1", Health: 200}, Damage: 5,
-// 		Armor: 5, Range: 3, Flee: 0.69}
+// 		FlatArmor: 5, Range: 3, PercentageArmor: 0.69}
 // 	player2 Battle = &Warrior{P: Person{Name: "Hero 2", Health: 200}, Damage: 6,
-// 		Armor: 5, Range: 2.1, Flee: 0.68}
+// 		FlatArmor: 5, Range: 2.1, PercentageArmor: 0.68}
 // 	arena Arena = &BattlePair{b1: player1, b2: player2}
 // 	l     []*Battle
 // )
