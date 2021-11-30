@@ -153,14 +153,14 @@ func (w *Warrior) String() string {
 	return w.P.String()
 }
 
+func makePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Battle {
+	var p Battle = &Warrior{P: Person{Name: name, Health: health},
+		Damage: damage, FlatArmor: flatArmor, Range: Range, PercentageArmor: percentageArmor}
+	return &p
+}
+
 // func describe(i interface{}) {
 // 	fmt.Printf("(%v, %T)\n", i, i)
-// }
-
-// func makePlayer(name string, damage float64) *Battle {
-// 	var p Battle = &Warrior{P: Person{Name: name, Health: 200}, Damage: damage,
-// 		FlatArmor: 5, Range: 3, PercentageArmor: 0.69}
-// 	return &p
 // }
 
 // var (
