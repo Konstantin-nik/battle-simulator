@@ -153,7 +153,7 @@ func (w *Warrior) String() string {
 	return w.P.String()
 }
 
-func makePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Battle {
+func MakePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Battle {
 	var p Battle = &Warrior{P: Person{Name: name, Health: health},
 		Damage: damage, FlatArmor: flatArmor, Range: Range, PercentageArmor: percentageArmor}
 	return &p
