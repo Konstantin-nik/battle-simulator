@@ -7,16 +7,16 @@ import (
 
 var wg = sync.WaitGroup{}
 
-func CircleBattle(l []*Battle, cb chan *Battle) {
+func CircleBattle(l []*Player, cb chan *Player) {
 	for len(l) > 1 {
 		// fmt.Println("----------------------------")
 		// for _, lb := range l {
 		// 	fmt.Println(*lb)
 		// }
 
-		var b1, b2 *Battle
+		var b1, b2 *Player
 		var a Arena
-		ch := make(chan *Battle, len(l)/2)
+		ch := make(chan *Player, len(l)/2)
 		for len(l) > 1 {
 			l, b1, b2 = l[:len(l)-2], l[len(l)-1], l[len(l)-2]
 			a = &BattlePair{b1: *b1, b2: *b2}
@@ -50,12 +50,12 @@ func CircleBattle(l []*Battle, cb chan *Battle) {
 type Arena interface {
 	StartBattle()
 	UpdateStatus()
-	GetResult() (a Battle)
-	Battle(bc chan *Battle)
+	GetResult() (a Player)
+	Battle(bc chan *Player)
 }
 
 type BattlePair struct {
-	b1, b2 Battle
+	b1, b2 Player
 	status bool
 }
 
@@ -72,7 +72,7 @@ func (bp *BattlePair) UpdateStatus() {
 	bp.status = bp.b1.IsAlive() && bp.b2.IsAlive()
 }
 
-func (bp *BattlePair) GetResult() (a Battle) {
+func (bp *BattlePair) GetResult() (a Player) {
 	if bp.b1.IsAlive() {
 		return bp.b1
 	} else if bp.b2.IsAlive() {
@@ -82,7 +82,7 @@ func (bp *BattlePair) GetResult() (a Battle) {
 	}
 }
 
-func (bp *BattlePair) Battle(bc chan *Battle) {
+func (bp *BattlePair) Battle(bc chan *Player) {
 	// fmt.Println("11")
 	bp.StartBattle()
 	b := bp.GetResult()
@@ -92,12 +92,12 @@ func (bp *BattlePair) Battle(bc chan *Battle) {
 	defer wg.Done()
 }
 
-// Battle interface used for battle skills.
+// Player interface used for battle classes.
 //
 // List of acceptable structures:
 // 		• type Warrior struct {}
 //
-type Battle interface {
+type Player interface {
 	IsAlive() bool
 	GetDamage(d float64)
 	DoDamage(i interface{ GetDamage(d float64) })
@@ -153,8 +153,8 @@ func (w *Warrior) String() string {
 	return w.P.String()
 }
 
-func MakePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Battle {
-	var p Battle = &Warrior{P: Person{Name: name, Health: health},
+func MakePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Player {
+	var p Player = &Warrior{P: Person{Name: name, Health: health},
 		Damage: damage, FlatArmor: flatArmor, Range: Range, PercentageArmor: percentageArmor}
 	return &p
 }
