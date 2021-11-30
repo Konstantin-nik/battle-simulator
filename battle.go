@@ -17,10 +17,9 @@ func CircleBattle(l []*Battle, cb chan *Battle) {
 
 		var b1, b2 *Battle
 		var a Arena
-		ch := make(chan *Battle, int(len(l)/2))
+		ch := make(chan *Battle, len(l)/2)
 		for len(l) > 1 {
-			l, b1 = l[:len(l)-1], l[len(l)-1]
-			l, b2 = l[:len(l)-1], l[len(l)-1]
+			l, b1, b2 = l[:len(l)-2], l[len(l)-1], l[len(l)-2]
 			a = &BattlePair{b1: *b1, b2: *b2}
 			wg.Add(1)
 			go a.Battle(ch)
@@ -39,10 +38,8 @@ func CircleBattle(l []*Battle, cb chan *Battle) {
 	// }
 	if len(l) == 0 {
 		cb <- nil
-		return
-	} else if len(l) == 1 {
+	} else {
 		cb <- l[0]
-		return
 	}
 }
 
@@ -134,11 +131,11 @@ func (p *Person) String() string {
 }
 
 type Warrior struct {
-	P      Person
-	Damage float64
-	Armor  float64
-	Range  float64
-	Flee   float64
+	P               Person
+	Damage          float64
+	FlatArmor       float64
+	Range           float64
+	PercentageArmor float64
 }
 
 func (w *Warrior) IsAlive() bool {
@@ -146,11 +143,11 @@ func (w *Warrior) IsAlive() bool {
 }
 
 func (w *Warrior) GetDamage(d float64) {
-	w.P.GetDamage(d - w.Armor)
+	w.P.GetDamage(d - w.FlatArmor)
 }
 
 func (w *Warrior) DoDamage(i interface{ GetDamage(d float64) }) {
-	i.GetDamage((w.Damage + w.Range) * w.Flee)
+	i.GetDamage((w.Damage + w.Range) * w.PercentageArmor)
 }
 
 func (w *Warrior) String() string {
