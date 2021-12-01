@@ -75,6 +75,8 @@ func (bp *BattlePair) StartBattle() {
 }
 
 func (bp *BattlePair) UpdateStatus() {
+	bp.b1.UpdateStatus()
+	bp.b2.UpdateStatus()
 	bp.status = bp.b1.IsAlive() && bp.b2.IsAlive()
 }
 
@@ -106,7 +108,9 @@ func (bp *BattlePair) Battle(bc chan *Player) {
 type Player interface {
 	Name() string
 	Health() string
+	Status() string
 	IsAlive() bool
+	UpdateStatus()
 	GetDamage(d float64)
 	DoDamage(i interface{ GetDamage(d float64) })
 	String() string
@@ -134,7 +138,7 @@ func (p *Person) GetDamage(d float64) {
 }
 
 func (p *Person) String() string {
-	return fmt.Sprintf("Status:\n\tName: %s\n\tHealth: %.2f", p.Name, p.Health)
+	return fmt.Sprintf("Name: %s\n\tHealth: %s\n\tStatus: %.2f", p.Stat.Name, p.Name, p.Health)
 }
 
 type Warrior struct {
@@ -153,8 +157,21 @@ func (w *Warrior) Health() string {
 	return fmt.Sprintf("%.2f", w.P.Health)
 }
 
+func (w *Warrior) Status() string {
+	return w.P.Stat.Name
+}
+
 func (w *Warrior) IsAlive() bool {
 	return w.P.IsAlive()
+}
+
+func (w *Warrior) UpdateStatus() {
+	if w.P.IsAlive() {
+		w.P.Stat.Name = "Alive"
+	} else {
+		w.P.Stat.Name = "Dead"
+	}
+
 }
 
 func (w *Warrior) GetDamage(d float64) {
@@ -170,7 +187,7 @@ func (w *Warrior) String() string {
 }
 
 func MakePlayer(name string, health float64, damage float64, flatArmor float64, Range float64, percentageArmor float64) *Player {
-	var p Player = &Warrior{P: Person{Name: name, Health: health},
+	var p Player = &Warrior{P: Person{Name: name, Health: health, Stat: Status{Name: "Alive"}},
 		Damage: damage, FlatArmor: flatArmor, Range: Range, PercentageArmor: percentageArmor}
 	return &p
 }
