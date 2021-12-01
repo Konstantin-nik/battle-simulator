@@ -67,7 +67,7 @@ type BattlePair struct {
 
 func (bp *BattlePair) StartBattle() {
 	bp.UpdateStatus()
-	for {
+	for i := 0; (i < 5) && bp.status; i++ {
 		bp.b1.DoDamage(bp.b2)
 		bp.b2.DoDamage(bp.b1)
 		bp.UpdateStatus()
