@@ -104,6 +104,8 @@ func (bp *BattlePair) Battle(bc chan *Player) {
 // 		• type Warrior struct {}
 //
 type Player interface {
+	Name() string
+	Health() string
 	IsAlive() bool
 	GetDamage(d float64)
 	DoDamage(i interface{ GetDamage(d float64) })
@@ -141,6 +143,14 @@ type Warrior struct {
 	FlatArmor       float64
 	Range           float64
 	PercentageArmor float64
+}
+
+func (w *Warrior) Name() string {
+	return w.P.Name
+}
+
+func (w *Warrior) Health() string {
+	return fmt.Sprintf("%.2f", w.P.Health)
 }
 
 func (w *Warrior) IsAlive() bool {
