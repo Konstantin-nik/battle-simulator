@@ -7,7 +7,13 @@ import (
 
 var wg = sync.WaitGroup{}
 
-func CircleBattle(l []*Player, cb chan *Player) {
+func CircleBattle(l []*Player) *Player {
+	ch := make(chan *Player)
+	circleBattle(l, ch)
+	return <-ch
+}
+
+func circleBattle(l []*Player, cb chan *Player) {
 	for len(l) > 1 {
 		// fmt.Println("----------------------------")
 		// for _, lb := range l {
