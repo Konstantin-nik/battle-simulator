@@ -1,4 +1,4 @@
-package battle
+package main
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ func circleBattle(l []*Player, cb chan *Player) {
 
 		var b1, b2 *Player
 		var a Arena
-		ch := make(chan *Player, len(l)/2)
+		ch := make(chan *Player, len(l))
 		for len(l) > 1 {
 			l, b1, b2 = l[:len(l)-2], l[len(l)-1], l[len(l)-2]
 			a = &BattlePair{b1: *b1, b2: *b2}
@@ -93,10 +93,13 @@ func (bp *BattlePair) GetResult() (a Player) {
 func (bp *BattlePair) Battle(bc chan *Player) {
 	// fmt.Println("11")
 	bp.StartBattle()
-	b := bp.GetResult()
-	//time.Sleep(100 * time.Millisecond)
-	// fmt.Println("22")
-	bc <- &b
+	if bp.b1.IsAlive() && bp.b2.IsAlive() {
+		bc <- &bp.b1
+		bc <- &bp.b2
+	} else {
+		b := bp.GetResult()
+		bc <- &b
+	}
 	defer wg.Done()
 }
 
@@ -197,24 +200,24 @@ func MakePlayer(name string, health float64, damage float64, flatArmor float64, 
 // }
 
 // var (
-// 	player1 Battle = &Warrior{P: Person{Name: "Hero 1", Health: 200}, Damage: 5,
+// 	player1 Player = &Warrior{P: Person{Name: "Hero 1", Health: 200}, Damage: 5,
 // 		FlatArmor: 5, Range: 3, PercentageArmor: 0.69}
-// 	player2 Battle = &Warrior{P: Person{Name: "Hero 2", Health: 200}, Damage: 6,
+// 	player2 Player = &Warrior{P: Person{Name: "Hero 2", Health: 200}, Damage: 6,
 // 		FlatArmor: 5, Range: 2.1, PercentageArmor: 0.68}
 // 	arena Arena = &BattlePair{b1: player1, b2: player2}
-// 	l     []*Battle
+// 	l     []*Player
 // )
 
 // func main() {
-// 	v := make(chan *Battle)
+// 	v := make(chan *Player)
 // 	l = append(l, &player1)
 // 	l = append(l, &player2)
-// 	l = append(l, makePlayer("Hero 3", 5))
-// 	l = append(l, makePlayer("Hero 4", 5))
-// 	l = append(l, makePlayer("Hero 5", 5))
-// 	l = append(l, makePlayer("Hero 6", 5))
-// 	l = append(l, makePlayer("Hero 7", 7))
-// 	go CircleBattle(l, v)
+// 	l = append(l, MakePlayer("Hero 3", 200, 5, 5, 3, 0.69))
+// 	l = append(l, MakePlayer("Hero 4", 200, 5, 5, 3, 0.69))
+// 	l = append(l, MakePlayer("Hero 5", 200, 5, 5, 3, 0.69))
+// 	l = append(l, MakePlayer("Hero 6", 200, 5, 5, 3, 0.69))
+// 	l = append(l, MakePlayer("Hero 7", 200, 7, 5, 3, 0.69))
+// 	go circleBattle(l, v)
 // 	fmt.Println(*<-v)
 // 	//fmt.Println("Welcome to the arena!")
 // 	//arena.StartBattle()
