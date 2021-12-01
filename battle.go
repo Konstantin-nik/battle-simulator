@@ -9,7 +9,7 @@ var wg = sync.WaitGroup{}
 
 func CircleBattle(l []*Player) *Player {
 	ch := make(chan *Player)
-	circleBattle(l, ch)
+	go circleBattle(l, ch)
 	return <-ch
 }
 
